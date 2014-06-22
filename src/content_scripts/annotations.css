@@ -89,6 +89,7 @@ div#annotation-pane form button:hover {
 div#annotation-pane form button:focus {
   outline: none;
   background: #33c4f4;
+  color: white;
 }
 
 div#annotation-pane form textarea {

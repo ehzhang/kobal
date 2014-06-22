@@ -14,7 +14,7 @@ String.prototype.hashCode = function(){
     hash = hash & hash; // Convert to 32bit integer
   }
   return Math.abs(hash);
-}
+};
 
 String.prototype.shave = function() {
   var index = this.indexOf('?');
@@ -23,7 +23,7 @@ String.prototype.shave = function() {
   } else {
     return this.substring(0,index);
   }
-}
+};
 
 var sendEmailAlert = function(email, url, original_content, replyer, reply_content, sendResponse) {
   var content = replyer+" replied to your Annotip comment!\n\nYou wrote: " + original_content + "\n\n" + replyer + " wrote: " + reply_content + "\n\n" + "Click "+url+" to respond.";
@@ -38,16 +38,19 @@ var sendEmailAlert = function(email, url, original_content, replyer, reply_conte
   };
   // Send the email!
   m.messages.send(params, function(res) {
-      console.log(res);
+//      console.log(res);
   }, function(err) {
-      console.log(err);
+//      console.log(err);
   });
-}
+};
 
 var postComment = function(url,text_id,comment,content,sendResponse) {
   chrome.storage.sync.get("username", function(username) {
+    console.log("username is: " + username);
     chrome.storage.sync.get("email", function(email) {
+      console.log("email is: " + email);
       chrome.storage.sync.get("id", function(uid) {
+        console.log("id is: " + uid);
         var comment_id = Math.floor((Math.random() * 1000000) + 1);
         var path = "https://mmfvc.firebaseio.com/urls/" + url.shave().hashCode() + "/paragraphs/" + SHA224(content).toString() + "/comments";
         var commentsRef = new Firebase(path + "/" + comment_id.toString());
@@ -64,7 +67,7 @@ var postComment = function(url,text_id,comment,content,sendResponse) {
       });
     });
   });
-}
+};
 
 var getPageComments = function(url,text_id,content,sendResponse) {
   var path = "https://mmfvc.firebaseio.com/urls/" + url.shave().hashCode() + "/paragraphs/" + SHA224(content).toString() + "/comments";
@@ -77,7 +80,7 @@ var getPageComments = function(url,text_id,content,sendResponse) {
     });
     sendResponse(comments);
   });
-}
+};
 
 chrome.extension.onMessage.addListener(
   function (message, sender, sendResponse) {

@@ -7,21 +7,25 @@ function annotations() {
    * @param eventData
    */
   function openAnnotationPane(eventData){
-    var annotationId = eventData.target.getAttribute('annotation-id');
+    if (!$annotationPane.hasClass('open')){
+      var annotationId = eventData.target.getAttribute('annotation-id');
+      var paneWidth = $annotationPane.width();
 
-    var paneWidth = $annotationPane.width();
+      if (!$annotationPane.is(':animated')) {
+        $annotationPane
+          .animate({"margin-right": '+=' + paneWidth})
+          .addClass('open');
+      }
 
-    if (!$annotationPane.is(':animated')) {
-      $annotationPane.animate({"margin-right": '+=' + paneWidth});
+      populateAnnotations(annotationId);
+
+      $('#comment-submit')
+        .off()
+        .click(function(e){
+        e.preventDefault();
+        postComment(annotationId);
+      });
     }
-
-    populateAnnotations(annotationId);
-
-    $('#comment-submit').click(function(e){
-      e.preventDefault();
-      postComment(annotationId);
-    });
-
   }
 
   function postComment(id) {
@@ -48,7 +52,9 @@ function annotations() {
   function closeAnnotationPane(){
     var paneWidth = $annotationPane.width();
     if ($annotationPane.css("margin-right").split('px')[0] >= -5 && !$annotationPane.is(':animated')) {
-      $annotationPane.animate({"margin-right": '-=' + paneWidth});
+      $annotationPane
+        .animate({"margin-right": '-=' + paneWidth})
+        .removeClass('open');
     }
   }
 
