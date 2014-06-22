@@ -27,7 +27,7 @@
       "matches": [
         "*://*.docs.meteor.com/*",
         "*://*.github.com/*",
-        "*://*.com/*"
+        "<all_urls>"
       ],
       "css": [
         "src/content_scripts/annotations.css"
