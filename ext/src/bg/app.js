@@ -97,11 +97,3 @@ chrome.extension.onMessage.addListener(
     }
   }
 );
-
-
-
-
-
-
-
-
