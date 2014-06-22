@@ -15,7 +15,7 @@
 </head>
 <body>
     <div class="container">
-        <div id="username-afterlogin">username</div>
+        <h1> Hello, <span id="username-afterlogin">username</span>! </h1>
             <div id="dialog-register" title="Register new user">
                 <form>
                     <fieldset>
@@ -25,17 +25,33 @@
                         <label for="password">Password</label>
                         <input type="password" name="password" id="register-password" value="" class="text ui-widget-content ui-corner-all form-control" />
                     </fieldset>
+                    <br>
                     <button id="opener-register" class="btn btn-success">Set Preferences</button>
                 </form>
             </div>
+            <br>
             <button id="opener-logout" class="btn btn-danger">Logout</button>
-            <br />
             <!-- <input id="data" /> -->
+            <br>
+            <h2>Set a username: </h2>
             <p> Username:
             <input id="username" class="form-control"/> </p>
             <button id="save" class="btn btn-info"> Save </button>
         </div>
     </div>
+
+    
+<h1>BitCoin Tipping</h1>
+Default tip value: 
+<input type="text" pattern="[0-9]*\.[0-9]*" title="Enter a valid amount." size="8" id="amount" /> 
+<select id="currency"><option value="BTC" id="BTC">BTC</option><option value="USD" id="USD">USD</option><option value="EUR" id="EUR">EUR</option></select><br />
+
+<input type="password" id="api_key">API Key<br></input>
+<input type="password" id="api_secret">API Secret</input>
+<br />
+<button id = "save_bittip"> Save Bitcoin and Coinbase choices! </button>
+
+<script type="text/javascript" src="options.js"></script>
 <script type='text/javascript' src='test.js'></script>
 </body>
 </html>

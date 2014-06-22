@@ -13,6 +13,9 @@
   "default_locale": "en",
   "background": {
     "scripts": [
+      "js/jquery/jquery.min.js",
+      "js/hmac-sha256.js",
+      "src/bg/bittip.js",
       "src/bg/sha224.js",
       "src/bg/firebase.js",
       "src/bg/mandrill.min.js",
@@ -20,7 +23,8 @@
     ],
     "persistent": true
   },
-  "permissions" : ["storage"],
+  "permissions" : ["storage",
+    "https://coinbase.com/", "tabs"],
   "options_page": "src/options/index.html",
   "content_scripts": [
     {

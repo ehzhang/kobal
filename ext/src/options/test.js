@@ -59,8 +59,8 @@ $("#opener-register").onclick = function () {
     register();
 };
 
-$("#save").onclick = function() {
-    var name = document.getElementById('username').value;
+$("#save").click(function() {
+  var name = $('#username').val();
     console.log('saved! woohoo');
     chrome.storage.sync.set( {
         username : name,
@@ -69,8 +69,7 @@ $("#save").onclick = function() {
         firebaseAuthToken: myUser.firebaseAuthToken,
         uid: myUser.uid
     });
-}
-
+});
 
 // $("#opener-login").onclick = function () {
 //     console.log('trying to login: ' + $("#login-email").val());
