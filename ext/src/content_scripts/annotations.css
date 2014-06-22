@@ -1,0 +1,141 @@
+/*
+  Annotation CSS
+*/
+span.annotation {
+  position: absolute;
+  font-size: 13px;
+  height: 25px;
+  width: 25px;
+  background: #EEEEEE;
+  color: #AAAAAA;
+  border-radius: 4px;
+  text-align: center;
+  line-height: 25px;
+  transition: background .2s linear, color .2s linear;
+}
+
+span.annotation.nocount {
+  font-size: 16px;
+  line-height: 22px;
+}
+span.annotation.nocount:after {
+  content: '+';
+}
+
+span.annotation:hover {
+  opacity: 1;
+  background: #33B5E5;
+  color: white;
+  cursor: pointer;
+}
+
+/*
+  Annotation Pane CSS
+*/
+
+div#annotation-pane {
+  position: fixed;
+  top: 0;
+  right: 0;
+  height: 100%;
+  width: 350px;
+  margin-right: -350px;
+  border-left: 3px solid #33B5E5;
+  background: rgba(0, 0, 0, 0.80);
+  color: white;
+  z-index: 9999;
+}
+
+div#annotation-pane .container {
+  position: relative;
+  padding: 0;
+  margin: 0;
+  height: 100%;
+  width: 100%;
+  overflow-y: scroll;
+}
+
+
+div#annotation-pane form {
+  position: absolute;
+  bottom: 0px;
+  width: 100%;
+}
+
+div#annotation-pane form textarea,
+div#annotation-pane form button {
+  font-family: 'Helvetic Neue', 'Helvetica', sans-serif;
+  font-size: 16px;
+  width: 325px;
+  margin: 8px;
+}
+
+div#annotation-pane form button {
+  border: 2px solid #33B5E5;
+  background: none;
+  border-radius: 4px;
+  padding: 8px;
+  font-weight: bold;
+  color: #33B5E5;
+  transition: color .2s linear, background .2s linear;
+}
+
+div#annotation-pane form button:hover {
+  color: white;
+  background: #33B5E5;
+  cursor: pointer;
+}
+
+div#annotation-pane form button:focus {
+  outline: none;
+  background: #33c4f4;
+  color: white;
+}
+
+div#annotation-pane form textarea {
+  background: none;
+  color: white;
+  border: none;
+  box-shadow: none;
+  border-radius: 0;
+  border-left: 3px solid #EBEBEB;
+  transition: border-left .2s ease-in-out;
+  height: 150px;
+  padding-left: 4px;
+}
+
+div#annotation-pane form textarea:focus {
+  border-left: 5px solid #9b9b9b;
+  outline: none;
+}
+
+ul.comments {
+  font-size: 14px;
+  padding: 0;
+  margin: 16px;
+  list-style-type: none;
+}
+
+ul.comments li.comment {
+  display: none;
+  margin-bottom: 8px;
+  padding-left: 8px;
+  padding-top: 8px;
+  padding-bottom: 8px;
+  border-left: 4px solid #33B5E5;
+}
+
+span.bitcoin {
+  float: right;
+  opacity: 0;
+  color: #33B5E5;
+  transition: opacity .2s ease-in-out;
+}
+
+span.bitcoin:hover {
+  cursor: pointer;
+}
+
+li.comment:hover span.bitcoin {
+  opacity: 1;
+}

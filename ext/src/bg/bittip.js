@@ -1,3 +1,5 @@
+var coinbase_secret, coinbase_secret, sendAmount, sendCurrency;
+
 var checkCoinbaseLogin = function(success_callback, failure_callback) {
 	chrome.storage.sync.get("api_key", function(token) {
 		coinbase_api_key = token['api_key'];
