@@ -60,7 +60,7 @@ var sendBitcoin = function(destination_address, note, callback) {
 			},
 			success: function(response, textStatus, jqXHR) {
 				if (response.success == true)
-					success_callback('sent ' + sendAmount + ' ' + sendCurrency + '...');
+					success_callback('sent ' + sendAmount + ' ' + sendCurrency + ' to ' + destination_address);
 				else if (response.errors[0].indexOf("You don't have that much") == 0) {
 					failure_callback("not enough funds");
         } else if (response.errors[0].indexOf("This transaction amount is below the current minimum amount to be accepted by the bitcoin network") == 0) {
