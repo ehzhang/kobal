@@ -44,17 +44,17 @@ var sendEmailAlert = function(email, url, original_content, replyer, reply_conte
   });
 }
 
-var postComment = function(url,text_id,content,sendResponse) {
+var postComment = function(url,text_id,comment,content,sendResponse) {
   chrome.storage.sync.get("username", function(username) {
     chrome.storage.sync.get("email", function(email) {
       chrome.storage.sync.get("id", function(uid) {
         var comment_id = Math.floor((Math.random() * 1000000) + 1);
-        var path = "https://mmfvc.firebaseio.com/urls/" + url.shave().hashCode() + "/paragraphs/" + SHA224(content).toString() + "/comments/" + comment_id.toString();
-        var commentsRef = new Firebase(path);
-        commentsRef.update({'username': username, 'uid': uid, 'url': url, 'email': email, 'text_id': text_id});
+        var path = "https://mmfvc.firebaseio.com/urls/" + url.shave().hashCode() + "/paragraphs/" + SHA224(content).toString() + "/comments";
+        var commentsRef = new Firebase(path + "/" + comment_id.toString());
+        commentsRef.update({'username': username, 'uid': uid, 'url': url, 'email': email, 'comment': comment});
         // Listen for replies
-        var repliesRef = new Firebase("https://mmfvc.firebaseio.com/comments/" + url.shave().hashCode());
-        commentsRef.on("child_added", function(childSnapshot, prevChildName) {
+        var repliesRef = new Firebase(path);
+        repliesRef.on("child_added", function(childSnapshot, prevChildName) {
           sendEmailAlert(email, url, content, childSnapshot.val()['username'], childSnapshot.val()['content'],sendResponse);
           sendResponse(childSnapshot.val());
         })
@@ -64,8 +64,10 @@ var postComment = function(url,text_id,content,sendResponse) {
   });
 }
 
-var getPageComments = function(url,text_id,sendResponse) {
-  var commentsRef = new Firebase("https://mmfvc.firebaseio.com/comments/" + url.shave().hashCode());
+var getPageComments = function(url,text_id,content,sendResponse) {
+  var path = "https://mmfvc.firebaseio.com/urls/" + url.shave().hashCode() + "/paragraphs/" + SHA224(content).toString() + "/comments";
+  var commentsRef = new Firebase(path);
+  console.log(path);
   commentsRef.once('value', function(childSnapshots) {
     var comments = [];
     childSnapshots.forEach(function(childSnapshot) {
@@ -78,12 +80,12 @@ var getPageComments = function(url,text_id,sendResponse) {
 chrome.extension.onMessage.addListener(
   function (message, sender, sendResponse) {
     // Check to make sure the message contains the fields we want
-    if (message.url && message.id && message.content && message.type && sendResponse && message.type == "POST") {
+    if (message.url && message.id && message.comment && message.content && message.type && sendResponse && message.type == "POST") {
       console.log("whoa, just got a post message!");
-      postComment(message.url,message.id,message.content,sendResponse);
+      postComment(message.url,message.id,message.comment, message.content,sendResponse);
       return true;
-    } else if (message.url && message.id && message.type == "GET") {
-      getPageComments(message.url, message.id, sendResponse);
+    } else if (message.url && message.id && message.content && message.type == "GET") {
+      getPageComments(message.url, message.id,message.content,sendResponse);
       return true;
     } else if (sendResponse) {
       sendResponse();
