@@ -17,7 +17,8 @@ function annotations() {
 
     populateAnnotations(annotationId);
 
-    $('#comment-submit').click(function(){
+    $('#comment-submit').click(function(e){
+      e.preventDefault();
       postComment(annotationId);
     });
 
@@ -26,7 +27,7 @@ function annotations() {
   function postComment(id) {
     var $input = $('#comment-input'),
         comment = $input.val(),
-        content = $findByAttributeValue('paragraph-id', id).val();
+        content = $findByAttributeValue('paragraph-id', id).text();
 
     chrome.runtime.sendMessage({
       url: location.href,
@@ -35,7 +36,8 @@ function annotations() {
       content: content,
       type: "POST"
     }, function (response) {
-      debugger;
+      $input.val("");
+      populateAnnotations(id);
     });
   }
 
@@ -50,7 +52,7 @@ function annotations() {
   }
 
   function clearAnnotationPane(){
-    $annotationPane.find('.comments').empty();
+    $('#annotation-pane').find('.comments').empty();
   }
 
   /**
@@ -60,13 +62,31 @@ function annotations() {
    */
   function attachAnnotation(paragraph, id){
 
+
+
     var margin = 16,
         offsetLeft= paragraph.offsetLeft + paragraph.offsetWidth + margin,
         offsetTop= paragraph.offsetTop,
         $paragraph = $(paragraph).attr('paragraph-id', id),
-        $annotation = $createAnnotation(0, offsetLeft, offsetTop, id);
+        $annotation = $createAnnotation(offsetLeft, offsetTop, id);
 
     $annotation.click(openAnnotationPane);
+
+    chrome.runtime.sendMessage({
+
+      url: location.href,
+      id: id,
+      content: $paragraph.text(),
+      type: "GET"
+
+    },function (response) {
+      if (response.length > 0){
+        $annotation
+          .text(response.length)
+          .removeClass('nocount');
+
+      }
+    });
 
     // Append the annotation to the body
     $('body').append($annotation);
@@ -86,14 +106,10 @@ function annotations() {
    * @param offsetTop
    * @param id
    */
-  function $createAnnotation(num, offsetLeft, offsetTop, id) {
-
-    var n = num === 0 ? "" : num,
-        nocount = num === 0 ? 'nocount' : '';
+  function $createAnnotation(offsetLeft, offsetTop, id) {
 
     return $(
-      "<span class='annotation "+ nocount + "'>" +
-      n +
+      "<span class='annotation nocount'>" +
       "</span>"
     ).css({
         left: offsetLeft,
@@ -138,7 +154,6 @@ function annotations() {
         url = location.href,
         content = $paragraph.text();
 
-
     // Send a message to chrome
     chrome.runtime.sendMessage({
 
@@ -153,7 +168,9 @@ function annotations() {
 
       if (response.length > 0){
 
-        debugger;
+        response.forEach(function(comment){
+          appendComment(comment.comment, comment.username);
+        })
 
       } else {
 
@@ -166,13 +183,17 @@ function annotations() {
   /**
    * Given a comment, append the comment to the comments container.
    * @param comment
+   * @param username
    */
-  function appendComment(comment){
+  function appendComment(comment, username){
+
     $annotationPane.find('.comments')
-      .append("" +
-        "" + comment +
+      .append(
+      $("" +
+        "<li class='comment'>" +
+        comment+
         "" +
-        "")
+        "</li>").fadeIn(800));
   }
 
   /**

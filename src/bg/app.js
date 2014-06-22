@@ -8,8 +8,8 @@
 String.prototype.hashCode = function(){
   var hash = 0;
   if (this.length == 0) return hash;
-  for (i = 0; i < this.length; i++) {
-    char = this.charCodeAt(i);
+  for (var i = 0; i < this.length; i++) {
+    var char = this.charCodeAt(i);
     hash = ((hash<<5)-hash)+char;
     hash = hash & hash; // Convert to 32bit integer
   }
@@ -51,13 +51,15 @@ var postComment = function(url,text_id,comment,content,sendResponse) {
         var comment_id = Math.floor((Math.random() * 1000000) + 1);
         var path = "https://mmfvc.firebaseio.com/urls/" + url.shave().hashCode() + "/paragraphs/" + SHA224(content).toString() + "/comments";
         var commentsRef = new Firebase(path + "/" + comment_id.toString());
+        console.log("uh oh");
         commentsRef.update({'username': username, 'uid': uid, 'url': url, 'email': email, 'comment': comment});
         // Listen for replies
         var repliesRef = new Firebase(path);
         repliesRef.on("child_added", function(childSnapshot, prevChildName) {
-          sendEmailAlert(email, url, content, childSnapshot.val()['username'], childSnapshot.val()['content'],sendResponse);
-          sendResponse(childSnapshot.val());
-        })
+          if (childSnapshot["username"] != username) {
+            sendEmailAlert(email, url, content, childSnapshot.val()['username'], childSnapshot.val()['content'],sendResponse);
+          }
+        });
         sendResponse(text_id);
       });
     });
@@ -67,7 +69,7 @@ var postComment = function(url,text_id,comment,content,sendResponse) {
 var getPageComments = function(url,text_id,content,sendResponse) {
   var path = "https://mmfvc.firebaseio.com/urls/" + url.shave().hashCode() + "/paragraphs/" + SHA224(content).toString() + "/comments";
   var commentsRef = new Firebase(path);
-  console.log(path);
+//  console.log(path);
   commentsRef.once('value', function(childSnapshots) {
     var comments = [];
     childSnapshots.forEach(function(childSnapshot) {

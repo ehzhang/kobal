@@ -3,19 +3,20 @@
 */
 span.annotation {
   position: absolute;
-  font-size: 10px;
+  font-size: 13px;
   height: 25px;
   width: 25px;
   background: #EEEEEE;
   color: #AAAAAA;
   border-radius: 4px;
   text-align: center;
-  line-height: 22px;
+  line-height: 25px;
   transition: background .2s linear, color .2s linear;
 }
 
 span.annotation.nocount {
   font-size: 16px;
+  line-height: 22px;
 }
 span.annotation.nocount:after {
   content: '+';
@@ -40,7 +41,8 @@ div#annotation-pane {
   width: 350px;
   margin-right: -350px;
   border-left: 3px solid #33B5E5;
-  background: white;
+  background: rgba(0, 0, 0, 0.80);
+  color: white;
   z-index: 9999;
 }
 
@@ -70,7 +72,7 @@ div#annotation-pane form button {
 
 div#annotation-pane form button {
   border: 2px solid #33B5E5;
-  background: white;
+  background: none;
   border-radius: 4px;
   padding: 8px;
   font-weight: bold;
@@ -90,12 +92,14 @@ div#annotation-pane form button:focus {
 }
 
 div#annotation-pane form textarea {
+  background: none;
+  color: white;
   border: none;
   box-shadow: none;
   border-radius: 0;
   border-left: 3px solid #EBEBEB;
   transition: border-left .2s ease-in-out;
-  height: 80px;
+  height: 150px;
   padding-left: 4px;
 }
 
@@ -108,4 +112,14 @@ ul.comments {
   font-size: 14px;
   padding: 0;
   margin: 16px;
+  list-style-type: none;
+}
+
+ul.comments li.comment {
+  display: none;
+  margin-bottom: 8px;
+  padding-left: 8px;
+  padding-top: 8px;
+  padding-bottom: 8px;
+  border-left: 4px solid #33B5E5;
 }
