@@ -10,12 +10,34 @@ function annotations() {
     var annotationId = eventData.target.getAttribute('annotation-id');
 
     var paneWidth = $annotationPane.width();
+
     if (!$annotationPane.is(':animated')) {
       $annotationPane.animate({"margin-right": '+=' + paneWidth});
     }
 
     populateAnnotations(annotationId);
 
+    $('#comment-submit').click(function(){
+      postComment(annotationId);
+    });
+
+  }
+
+
+  function postComment(id) {
+    var $input = $('#comment-input'),
+        comment = $input.val(),
+        content = $findByAttributeValue('paragraph-id', id).val();
+
+    chrome.runtime.sendMessage({
+      url: location.href,
+      id: id,
+      comment: comment,
+      content: content,
+      type: "POST"
+    }, function (response) {
+      debugger;
+    });
   }
 
   /**
@@ -92,25 +114,74 @@ function annotations() {
           "" +
           "</ul>" +
           "<form>" +
-            "<textarea type='comment' class='comment-input'></textarea>" +
+            "<textarea type='comment' id='comment-input'></textarea>" +
             "<br>" +
-            "<button class='comment-submit'> POST COMMENT </button>" +
+            "<button id='comment-submit'> POST COMMENT </button>" +
           "</form>" +
         "</div>" +
       "</div>"
     )
   }
 
+  /**
+   * Populate the annotations panel based on the data-id
+   */
   function populateAnnotations(id) {
 
     clearAnnotationPane();
 
     // Get data from firebase using the id
 
+    var $paragraph = $findByAttributeValue("paragraph-id", id),
+        url = location.href,
+        content = $paragraph.text();
+
+    // Send a message to chrome
+    chrome.runtime.sendMessage({
+
+      url: url,
+      id: id,
+      content: content,
+      type: "GET"
+
+    },function (response) {
+
+      clearAnnotationPane();
+
+      if (response.length > 0){
+
+        debugger;
+
+      } else {
+
+        appendComment("No Comments Yet!");
+
+      }
+    });
+
+    appendComment("Loading...");
+
+  }
+
+  /**
+   * Given a comment, append the comment to the comments container.
+   * @param comment
+   */
+  function appendComment(comment){
     $annotationPane.find('.comments')
-      .append('<li><h1>'+ id +'</h1></li>');
+      .append("" +
+        "" + comment +
+        "" +
+        "")
+  }
 
-
+  /**
+   * Helper function to find jQuery object by attribute and value
+   * @param attr
+   * @param val
+   */
+  function $findByAttributeValue(attr, val){
+    return $("[" + attr + "='" + val + "']");
   }
 
   /**
@@ -156,17 +227,6 @@ chrome.extension.sendMessage({}, function(response) {
   var readyStateCheckInterval = setInterval(function() {
     if (document.readyState === "complete") {
       clearInterval(readyStateCheckInterval);
-
-      // Send a message to chrome (Listen for on app.js)
-      chrome.runtime.sendMessage({
-        url: "blah.com",
-        path: "//Body/Div whatever",
-        content: "documentation blah blah bad"
-      }, function (response) {
-
-      console.log(response);
-
-      });
 
       annotations();
 
