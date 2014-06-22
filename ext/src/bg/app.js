@@ -104,11 +104,3 @@ chrome.extension.onMessage.addListener(
     }
   }
 );
-
-
-
-
-
-
-
-

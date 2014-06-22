@@ -58,7 +58,7 @@ div#annotation-pane .container {
 
 div#annotation-pane form {
   position: absolute;
-  bottom: 8px;
+  bottom: 0px;
   width: 100%;
 }
 
