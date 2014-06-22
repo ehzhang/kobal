@@ -1,5 +1,106 @@
-/**
- * Place your custom CSS styles here.
- **/
+/*
+  Annotation CSS
+*/
+span.annotation {
+  position: absolute;
+  font-size: 10px;
+  height: 25px;
+  width: 25px;
+  background: #EEEEEE;
+  color: #AAAAAA;
+  border-radius: 4px;
+  text-align: center;
+  line-height: 22px;
+  transition: background .2s linear, color .2s linear;
+}
+
+span.annotation.nocount {
+  font-size: 16px;
+}
+span.annotation.nocount:after {
+  content: '+';
+}
+
+span.annotation:hover {
+  opacity: 1;
+  background: #33B5E5;
+  color: white;
+  cursor: pointer;
+}
+
+/*
+  Annotation Pane CSS
+*/
+
+div#annotation-pane {
+  position: fixed;
+  top: 0;
+  right: 0;
+  height: 100%;
+  overflow-y: scroll;
+  width: 350px;
+  margin-right: -350px;
+  border-left: 3px solid #33B5E5;
+  background: white;
+  z-index: 9999;
+}
+
+div#annotation-pane .container {
+  position: relative;
+  height: 100%;
+  width: 100%;
+}
 
 
+div#annotation-pane form {
+  position: absolute;
+  padding: 16px;
+  width: 100%;
+  bottom: 0;
+}
+
+
+div#annotation-pane form textarea,
+div#annotation-pane form button {
+  font-family: 'Helvetic Neue', 'Helvetica', sans-serif;
+  font-size: 16px;
+  margin: 0 auto;
+  margin-bottom: 8px;
+  width: 318px;
+}
+
+div#annotation-pane form button {
+  border: 2px solid #33B5E5;
+  background: white;
+  border-radius: 4px;
+  padding: 8px;
+  font-weight: bold;
+  color: #33B5E5;
+  transition: color .2s linear, background .2s linear;
+}
+
+div#annotation-pane form button:hover {
+  color: white;
+  background: #33B5E5;
+  cursor: pointer;
+}
+
+div#annotation-pane form button:focus {
+  outline: none;
+  background: #33c4f4;
+}
+
+div#annotation-pane form textarea {
+  border: none;
+  box-shadow: none;
+  border-radius: 0;
+  border-left: 3px solid #EBEBEB;
+  transition: border-left .2s ease-in-out;
+  height: 80px;
+  padding: 8px;
+}
+
+div#annotation-pane form textarea:focus {
+  border-left: 5px solid #9b9b9b;
+  outline: none;
+}
