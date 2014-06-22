@@ -96,11 +96,13 @@ $(function () {
                 var email = $("#register-email").val();
                 var password = $("#register-password").val();
                 console.log("Creating user " + email + " " + password);
+
                 authClient.createUser(email, password, function (error, user) {
                     if (!error) {
                         console.log('logging new registered user');
                         doLogin(email, password);
                     } else {
+
                         console.log(error);
                     }
                 });
@@ -109,10 +111,14 @@ $(function () {
     $("#opener-login").click(function () {
                         console.log('trying to login: ' + $("#login-email").val());
 
+                        
+
                 var email = $("#login-email").val();
                 var password = $("#login-password").val();
 
                 doLogin(email, password);
+
+
     });
 
     $("#opener-logout").click(function () {
@@ -126,9 +132,6 @@ function doLogin(email, password) {
         password: password
     });
 };
-
-
-
 
 
 $('#data').keypress(function (e) {
