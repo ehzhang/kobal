@@ -46,29 +46,23 @@ var sendEmailAlert = function(email, url, original_content, replyer, reply_conte
 
 var postComment = function(url,text_id,comment,content,sendResponse) {
   chrome.storage.sync.get("username", function(username_data) {
-    var username_str = this["username"];
-    debugger;
-    console.log("username is: " + username_str);
+    console.log("username is: " + username_data["username"]);
     chrome.storage.sync.get("email", function(email_data) {
       var email_str = email_data["email"];
       console.log("email is: " + email_str);
       chrome.storage.sync.get("id", function(uid_data) {
-        var uid_str = uid_data["id"];
-        console.log("id is: " + uid_str);
         var comment_id = Math.floor((Math.random() * 1000000) + 1);
         var path = "https://mmfvc.firebaseio.com/urls/" + url.shave().hashCode() + "/paragraphs/" + SHA224(content).toString() + "/comments";
         var commentsRef = new Firebase(path + "/" + comment_id.toString());
         console.log("hereyo");
-        commentsRef.update({'username': username_str, 'uid': uid_str, 'url': url, 'email': email_str, 'comment': comment, 'timestamp':new Date()});
+        commentsRef.update({'username': username_data["username"], 'uid': uid_data["id"], 'url': url, 'email': email_str, 'comment': comment, 'timestamp':new Date()});
         // Listen for replies
         var repliesRef = new Firebase(path);
-        debugger;
         repliesRef.on("child_added", function(childSnapshot, prevChildName) {
-          debugger;
-          //if (childSnapshot["username"] != username_str) {
+          if (childSnapshot["username"] != username_data["username"]) {
             sendEmailAlert(email_str, url, content, childSnapshot.val()['username'], childSnapshot.val()['content'],sendResponse);
             console.log(email_str+url,content,childSnapshot.child("username"));
-          //}
+          }
         });
         sendResponse(text_id);
       });

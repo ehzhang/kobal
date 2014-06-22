@@ -19,6 +19,12 @@ authClient = new FirebaseSimpleLogin(new Firebase("https://mmfvc.firebaseio.com"
         console.log('User ID: ' + user.id + ', Provider: ' + user.provider);
         myUser = user;
         $("#username-afterlogin")[0].innerHTML = myUser.email;
+        chrome.storage.sync.set( {
+            id : myUser.id,
+            email : myUser.email,
+            firebaseAuthToken: myUser.firebaseAuthToken,
+            uid: myUser.uid
+        });
         console.log('logged in');
     } else {
         console.log('logged out');
@@ -30,7 +36,6 @@ function doLogin(email1, password1) {
         email: email1,
         password: password1
     });
-    $("#username-afterlogin").innerHTML = email;
 };
 
 function register() {
