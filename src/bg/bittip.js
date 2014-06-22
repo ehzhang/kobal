@@ -96,3 +96,16 @@ var sendBitcoin = function(destination_address, note, callback) {
       alert("Please configure the extension with your Coinbase credentials!");
 	});
 };
+
+chrome.extension.onMessage.addListener(
+  function (message, sender, sendResponse) {
+    // Check to make sure the message contains the fields we want
+    if (message.bittip && message.targetEmail) {
+      console.log("ooooh about to tip someone!");
+      sendBitcoin(message.targetEmail, "Thanks for your awesome post on Kobal!", sendResponse)
+      return true;
+    } else if (sendResponse) {
+      sendResponse({success: false});
+    }
+  }
+);
