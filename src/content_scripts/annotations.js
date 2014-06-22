@@ -64,9 +64,9 @@ function annotations() {
   function attachAnnotation(paragraph, id){
 
     var margin = 16,
-        offsetLeft= paragraph.offsetLeft + paragraph.offsetWidth + margin,
-        offsetTop= paragraph.offsetTop,
         $paragraph = $(paragraph).attr('paragraph-id', id),
+        offsetLeft= $paragraph.offset().left + paragraph.offsetWidth + margin,
+        offsetTop= $paragraph.offset().top,
         $annotation = $createAnnotation(offsetLeft, offsetTop, id);
 
     $annotation.click(openAnnotationPane);
@@ -94,7 +94,7 @@ function annotations() {
       type: "GET"
 
     },function (response) {
-      if (response.length > 0){
+      if (response && response.length > 0){
         $findByAttributeValue('annotation-id', id)
           .text(response.length)
           .removeClass('nocount');
@@ -231,7 +231,7 @@ function annotations() {
     })
     // For debugging paragraphs
     .hover(function(){
-      $(this).css("background", "yellow");
+      $(this).css("background", "rgba(51, 181, 229, .05)");
     }, function () {
       $(this).css("background", "none");
     });
