@@ -6,8 +6,22 @@
 
 
 //example of using a message handler from the inject scripts
+
 chrome.extension.onMessage.addListener(
-  function(request, sender, sendResponse) {
-  	chrome.pageAction.show(sender.tab.id);
-    sendResponse();
-  });
+  function (message, sender, sendResponse) {
+    // Check to make sure the message contains the fields we want
+    if (message.url && message.path && message.content) {
+      if (sendResponse) {
+
+        console.log("whoa, just got a message!");
+        // Do something with the url, path, content
+        // sendResponse can be passed through as a callback in another function
+        sendResponse('Some kind of JSON-ifiable object');
+
+        return true; // Return true keeps the connection open for async
+      }
+    } else if (sendResponse) {
+      sendResponse();
+    }
+  }
+);
