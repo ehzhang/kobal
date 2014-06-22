@@ -52,7 +52,7 @@ var postComment = function(url,text_id,comment,content,sendResponse) {
       console.log("email is: " + email_str);
       chrome.storage.sync.get("id", function(uid_data) {
         var comment_id = Math.floor((Math.random() * 1000000) + 1);
-        var path = "https://mmfvc.firebaseio.com/urls/" + url.shave().hashCode() + "/paragraphs/" + SHA224(content).toString() + "/comments";
+        var path = "https://mmfvc.firebaseio.com/urls/" + SHA224(url.shave()) + "/paragraphs/" + SHA224(content).toString() + "/comments";
         var commentsRef = new Firebase(path + "/" + comment_id.toString());
         console.log("hereyo");
         commentsRef.update({'username': username_data["username"], 'uid': uid_data["id"], 'url': url, 'email': email_str, 'comment': comment, 'timestamp':new Date()});
@@ -72,9 +72,8 @@ var postComment = function(url,text_id,comment,content,sendResponse) {
 };
 
 var getPageComments = function(url,text_id,content,sendResponse) {
-  var path = "https://mmfvc.firebaseio.com/urls/" + url.shave().hashCode() + "/paragraphs/" + SHA224(content).toString() + "/comments";
+  var path = "https://mmfvc.firebaseio.com/urls/" + SHA224(url.shave()) + "/paragraphs/" + SHA224(content).toString() + "/comments";
   var commentsRef = new Firebase(path);
-//  console.log(path);
   commentsRef.once('value', function(childSnapshots) {
     var comments = [];
     childSnapshots.forEach(function(childSnapshot) {
@@ -84,6 +83,10 @@ var getPageComments = function(url,text_id,content,sendResponse) {
   });
 };
 
+
+/**
+ * Main app messages, listens for GET, POST, and TIP messages
+ */
 chrome.extension.onMessage.addListener(
   function (message, sender, sendResponse) {
     // Check to make sure the message contains the fields we want
@@ -92,7 +95,12 @@ chrome.extension.onMessage.addListener(
       postComment(message.url,message.id,message.comment, message.content, sendResponse);
       return true;
     } else if (message.url && message.id && message.content && message.type == "GET") {
-      getPageComments(message.url, message.id,message.content,sendResponse);
+      getPageComments(message.url, message.id, message.content, sendResponse);
+      return true;
+    } else if (message.bittip && message.targetEmail) {
+      console.log("ooooh about to tip someone!");
+      debugger;
+      sendBitcoin(message.targetEmail, "Thanks for your awesome post on Kobal!", sendResponse)
       return true;
     } else if (sendResponse) {
       sendResponse();

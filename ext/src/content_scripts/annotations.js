@@ -176,14 +176,10 @@ function annotations() {
 
       clearAnnotationPane();
 
-      if (response.length > 0){
+      if (response && response.length > 0){
 
         response.forEach(function(comment){
-          if (comment.username) {
-            appendComment(comment.comment, comment.username.username);
-          } else {
-            appendComment(comment.comment)
-          }
+          appendComment(comment.comment, comment.username, comment.email);
         });
         updateAnnotation(id);
 
@@ -200,7 +196,19 @@ function annotations() {
    * @param comment
    * @param username
    */
-  function appendComment(comment, username){
+  function appendComment(comment, username, email){
+
+    var $bitcoinButton =
+      $("<span class='bitcoin'>Ƀ</span>").click(function() {
+        chrome.runtime.sendMessage({
+          bittip: true,
+          targetEmail: email
+        },function(response) {
+          if (response){
+            alert('Yay, thanks for the tip!');
+          }
+        })
+      });
 
     $annotationPane.find('.comments')
       .append(
@@ -208,8 +216,9 @@ function annotations() {
         "<li class='comment'>" +
         comment+
         (username ? "<small> - " + username + "</small>" : "") +
-        "<span class='bitcoin'>Ƀ</span>" +
-        "</li>").fadeIn(800));
+        "</li>")
+        .append($bitcoinButton)
+        .fadeIn(800));
   }
 
   /**

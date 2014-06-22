@@ -116,6 +116,12 @@ ul.comments {
   list-style-type: none;
 }
 
+ul.comments small {
+  text-transform: uppercase;
+  font-size: 10px;
+  color: grey;
+}
+
 ul.comments li.comment {
   display: none;
   margin-bottom: 8px;
@@ -139,3 +145,4 @@ span.bitcoin:hover {
 li.comment:hover span.bitcoin {
   opacity: 1;
 }
+

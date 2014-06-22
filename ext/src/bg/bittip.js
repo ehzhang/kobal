@@ -1,6 +1,6 @@
 var coinbase_secret, coinbase_secret, sendAmount, sendCurrency;
 
-var checkCoinbaseLogin = function(success_callback, failure_callback) {
+function checkCoinbaseLogin(success_callback, failure_callback) {
 	chrome.storage.sync.get("api_key", function(token) {
 		coinbase_api_key = token['api_key'];
 	});
@@ -24,20 +24,7 @@ var checkCoinbaseLogin = function(success_callback, failure_callback) {
 	}
 };
 
-chrome.extension.onMessage.addListener(
-  function (message, sender, sendResponse) {
-    // Check to make sure the message contains the fields we want
-    if (message.bittip && message.targetEmail) {
-      console.log("whoa, just got a message!");
-      // Your method here
-      return true;
-    } else if (sendResponse) {
-      sendResponse();
-    }
-  }
-);
-
-var sendBitcoin = function(destination_address, note, callback) {
+function sendBitcoin(destination_address, note, callback) {
 	if(callback == null){
 		callback = function(msg){
 			console.log(msg);
@@ -98,16 +85,3 @@ var sendBitcoin = function(destination_address, note, callback) {
       alert("Please configure the extension with your Coinbase credentials!");
 	});
 };
-
-chrome.extension.onMessage.addListener(
-  function (message, sender, sendResponse) {
-    // Check to make sure the message contains the fields we want
-    if (message.bittip && message.targetEmail) {
-      console.log("ooooh about to tip someone!");
-      sendBitcoin(message.targetEmail, "Thanks for your awesome post on Kobal!", sendResponse)
-      return true;
-    } else if (sendResponse) {
-      sendResponse({success: false});
-    }
-  }
-);
