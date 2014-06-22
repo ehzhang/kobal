@@ -12,6 +12,8 @@
   "default_locale": "en",
   "background": {
     "scripts": [
+      "src/bg/firebase.js",
+      "src/bg/mandrill.min.js",
       "src/bg/app.js"
     ],
     "persistent": true

@@ -5,28 +5,6 @@
 // });
 
 
-//example of using a message handler from the inject scripts
-
-chrome.extension.onMessage.addListener(
-  function (message, sender, sendResponse) {
-    // Check to make sure the message contains the fields we want
-    if (message.url && message.path && message.content) {
-      if (sendResponse) {
-
-        console.log("whoa, just got a message!");
-        // Do something with the url, path, content
-        // sendResponse can be passed through as a callback in another function
-        sendResponse('Some kind of JSON-ifiable object');
-
-        return true; // Return true keeps the connection open for async
-      }
-    } else if (sendResponse) {
-      sendResponse();
-    }
-  }
-);
-
-
 String.prototype.hashCode = function(){
   var hash = 0;
   if (this.length == 0) return hash;
@@ -38,23 +16,83 @@ String.prototype.hashCode = function(){
   return Math.abs(hash);
 }
 
-// Post a comment
-var postComment(url,path,content) {
-  chrome.storage.sync.get(["username","uid"], function(username, uid) {
-      console.log("username", username);
-      console.log("uid",uid);
-  });
-
-  var commentsRef = new Firebase("https://mmfvc.firebaseio.com/comments/" + url.hashCode());
-  commentsRef.push({'username': username, 'uid':uid, 'url': url, 'path': path, 'content':content});
-  
-  // Listen for replies
-  fb.on("value", function(data) {
-    var name = data.val() ? data.val().name : "";
-    alert("My name is " + name);
-  });
-
+String.prototype.shave = function() {
+  var index = this.indexOf('?');
+  if (index < 0) {
+    return this;
+  } else {
+    return this.substring(0,index);
+  }
 }
+
+var sendEmailAlert = function(email, url, original_content, replyer, reply_content, sendResponse) {
+  var content = replyer+" replied to your Annotip comment!\n\nYou wrote: " + original_content + "\n\n" + replyer + " wrote: " + reply_content + "\n\n" + "Click "+url+" to respond.";
+  var m = new mandrill.Mandrill('MKqVPsdcFONaM-Tmo88RyQ');
+  var params = {
+    "message": {
+      "from_email":"annotip@mit.edu",
+      "to":[{"email":email}],
+      "subject": "Response to Annotip comment",
+      "text": content
+    }
+  };
+  // Send the email!
+  m.messages.send(params, function(res) {
+      console.log(res);
+  }, function(err) {
+      console.log(err);
+  });
+}
+
+var postComment = function(url,id,content,sendResponse) {
+  chrome.storage.sync.get(["username","uid"], function(username, uid, email) {
+    var username = "ksiegel";
+    var uid = "12345";
+    var email = "ksiegel@mit.edu";
+    console.log("username", username);
+    console.log("uid",uid);
+    var path = "https://mmfvc.firebaseio.com/comments/" + url.shave().hashCode();
+    var commentsRef = new Firebase(path);
+    commentsRef.update({'username': username, 'uid': uid, 'url': url, 'email': email, 'id': id, 'content':content});
+    // Listen for replies
+    var repliesRef = new Firebase("https://mmfvc.firebaseio.com/comments/" + url.shave().hashCode());
+    commentsRef.on("child_added", function(childSnapshot, prevChildName) {
+      console.log(childSnapshot.val().toString());
+      sendEmailAlert(email, url, content, childSnapshot.val()['username'], childSnapshot.val()['content'],sendResponse);
+      sendResponse(childSnapshot.val());
+    })
+  });
+}
+
+var getPageComments = function(url,id,sendResponse) {
+  var commentsRef = new Firebase("https://mmfvc.firebaseio.com/comments/" + url.shave().hashCode());
+  commentsRef.once('value', function(childSnapshots) {
+    childSnapshots.forEach(function(childSnapshot) {
+      sendResponse(childSnapshot.val());
+    });
+  });
+}
+
+chrome.extension.onMessage.addListener(
+  function (message, sender, sendResponse) {
+    // Check to make sure the message contains the fields we want
+    if (message.url && message.id && message.content && message.type && sendResponse && message.type == "POST") {
+      console.log("whoa, just got a post message!");
+      postComment(message.url,message.id,message.content,sendResponse);
+      return true;
+    } else if (message.url && message.id && message.type == "GET") {
+      getPageComments(message.url, message.id,sendResponse);
+      return true;
+    } else if (sendResponse) {
+      sendResponse();
+    }
+  }
+);
+
+
+
+
+
 
 
 
