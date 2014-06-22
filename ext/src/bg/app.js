@@ -59,7 +59,8 @@ var postComment = function(url,text_id,comment,content,sendResponse) {
         // Listen for replies
         var repliesRef = new Firebase(path);
         repliesRef.on("child_added", function(childSnapshot, prevChildName) {
-          if (childSnapshot["username"] != username_data["username"]) {
+          console.log(childSnapshot.val()["email"]);
+          if (childSnapshot.val()["email"] != email_str) {
             sendEmailAlert(email_str, url, content, childSnapshot.val()['username'], childSnapshot.val()['content'],sendResponse);
             console.log(email_str+url,content,childSnapshot.child("username"));
           }
