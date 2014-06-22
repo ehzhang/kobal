@@ -14,6 +14,7 @@
   "background": {
     "scripts": [
       "js/jquery/jquery.min.js",
+      "js/hmac-sha256.js",
       "src/bg/bittip.js",
       "src/bg/app.js"
     ],
@@ -40,6 +41,6 @@
     }
   ],
   "web_accessible_resources": [
-    "js/jquery/jquery.min.js",
+    "js/jquery/jquery.min.js"
   ]
 }

@@ -1,14 +1,14 @@
-var coinbase-api-key, coinbase-secret;
+var coinbase_api_key, coinbase_secret;
 var checkCoinbaseLogin = function(success_callback, failure_callback) {
 	chrome.storage.sync.get("api_key", function(token) {
-		coinbase-api-key = token['api_key'];
+		coinbase_api_key = token['api_key'];
 	});
 
 	chrome.storage.sync.get("api_secret", function(token) {
-		coinbase-secret = token['api_secret'];
+		coinbase_secret = token['api_secret'];
 	});
 
-	if (coinbase-secret != "undefined" && coinbase-api-key != "undefined") {
+	if (coinbase_secret != "undefined" && coinbase_api_key != "undefined") {
 		return success_callback();
 	} else {
 		return failure_callback();
@@ -32,10 +32,18 @@ var sendSuccess = function(msg) {
 var sendBitcoin = function(destination_address, sendAmount, sendCurrency) {
 	// Sends money using Coinbase
 	var sendMoney = function(success_callback, failure_callback) {
-		$.ajax("https://coinbase.com/api/v1/transactions/send_money", {
+    var nonce = (new Date()).getTime();
+    var signature;
+    var url = "https://coinbase.com/api/v1/transactions/send_money";
+
+		$.ajax(url, {
 			type: "POST",
+      headers: {
+        ACCESS_KEY: coinbase_api_key,
+        ACCESS_SIGNATURE: signature,
+        ACCESS_NONCE: nonce,
+      },
 			data: {
-				access_token: coinbase_access_token,
 				transaction: {
 					to: destination_address,
 					amount_string: sendAmount,
@@ -43,6 +51,11 @@ var sendBitcoin = function(destination_address, sendAmount, sendCurrency) {
 					notes: "Tip from a 'tatertip user"
 				}
 			},
+      beforeSend: function(jqXHR, settings){
+        var message = "" + nonce + url + this.data;
+        signature = CryptoJS.HmacSHA256(message, coinbase_secret);
+        jqXHR.setRequestHeader("ACCESS_SIGNATURE", signature)
+      },
 			success: function(response, textStatus, jqXHR) {
 				if (response.success == true)
 					success_callback('sent ' + sendAmount + ' ' + sendCurrency + '...');
