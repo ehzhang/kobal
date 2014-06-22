@@ -1,4 +1,4 @@
-mysterymagicfuntimeverycool
+KOBAL
 ===========================
 
-this chrome extension is magical
+A chrome extension to annotate the internet.

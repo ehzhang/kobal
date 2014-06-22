@@ -179,7 +179,11 @@ function annotations() {
       if (response.length > 0){
 
         response.forEach(function(comment){
-          appendComment(comment.comment, comment.username);
+          if (comment.username) {
+            appendComment(comment.comment, comment.username.username);
+          } else {
+            appendComment(comment.comment)
+          }
         });
         updateAnnotation(id);
 
@@ -203,7 +207,7 @@ function annotations() {
       $("" +
         "<li class='comment'>" +
         comment+
-        "" +
+        (username ? "<small> - " + username + "</small>" : "") +
         "</li>").fadeIn(800));
   }
 
