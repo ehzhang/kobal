@@ -45,23 +45,30 @@ var sendEmailAlert = function(email, url, original_content, replyer, reply_conte
 };
 
 var postComment = function(url,text_id,comment,content,sendResponse) {
-  chrome.storage.sync.get("username", function(username) {
-    console.log("username is: " + username);
-    chrome.storage.sync.get("email", function(email) {
-      console.log("email is: " + email);
-      chrome.storage.sync.get("id", function(uid) {
-        console.log("id is: " + uid);
+  chrome.storage.sync.get("username", function(username_data) {
+    var username_str = this["username"];
+    debugger;
+    console.log("username is: " + username_str);
+    chrome.storage.sync.get("email", function(email_data) {
+      var email_str = email_data["email"];
+      console.log("email is: " + email_str);
+      chrome.storage.sync.get("id", function(uid_data) {
+        var uid_str = uid_data["id"];
+        console.log("id is: " + uid_str);
         var comment_id = Math.floor((Math.random() * 1000000) + 1);
         var path = "https://mmfvc.firebaseio.com/urls/" + url.shave().hashCode() + "/paragraphs/" + SHA224(content).toString() + "/comments";
         var commentsRef = new Firebase(path + "/" + comment_id.toString());
-        console.log("uh oh");
-        commentsRef.update({'username': username, 'uid': uid, 'url': url, 'email': email, 'comment': comment});
+        console.log("hereyo");
+        commentsRef.update({'username': username_str, 'uid': uid_str, 'url': url, 'email': email_str, 'comment': comment, 'timestamp':new Date()});
         // Listen for replies
         var repliesRef = new Firebase(path);
+        debugger;
         repliesRef.on("child_added", function(childSnapshot, prevChildName) {
-          if (childSnapshot["username"] != username) {
-            sendEmailAlert(email, url, content, childSnapshot.val()['username'], childSnapshot.val()['content'],sendResponse);
-          }
+          debugger;
+          //if (childSnapshot["username"] != username_str) {
+            sendEmailAlert(email_str, url, content, childSnapshot.val()['username'], childSnapshot.val()['content'],sendResponse);
+            console.log(email_str+url,content,childSnapshot.child("username"));
+          //}
         });
         sendResponse(text_id);
       });
@@ -87,7 +94,7 @@ chrome.extension.onMessage.addListener(
     // Check to make sure the message contains the fields we want
     if (message.url && message.id && message.comment && message.content && message.type && sendResponse && message.type == "POST") {
       console.log("whoa, just got a post message!");
-      postComment(message.url,message.id,message.comment, message.content,sendResponse);
+      postComment(message.url,message.id,message.comment, message.content, sendResponse);
       return true;
     } else if (message.url && message.id && message.content && message.type == "GET") {
       getPageComments(message.url, message.id,message.content,sendResponse);
