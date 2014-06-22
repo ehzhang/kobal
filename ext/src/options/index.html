@@ -14,42 +14,55 @@
 
 </head>
 <body>
-    <div class="container">
-        <h1> Hello, <span id="username-afterlogin">username</span>! </h1>
-            <div id="dialog-register" title="Register new user">
-                <form>
-                    <fieldset>
-                        <label for="name">Email</label>
-                        <input type="text" name="email" id="register-email" class="text ui-widget-content ui-corner-all form-control" />
+  <div class="container">
+    <h1> Hello, <span id="username-afterlogin">username</span>! </h1>
+      <div id="dialog-register" title="Register new user">
+        <form>
+          <fieldset>
+            <label for="name">Email</label>
+            <input type="text" name="email" id="register-email" class="text ui-widget-content ui-corner-all form-control" />
 
-                        <label for="password">Password</label>
-                        <input type="password" name="password" id="register-password" value="" class="text ui-widget-content ui-corner-all form-control" />
-                    </fieldset>
-                    <br>
-                    <button id="opener-register" class="btn btn-success">Set Preferences</button>
-                </form>
-            </div>
-            <br>
-            <button id="opener-logout" class="btn btn-danger">Logout</button>
-            <!-- <input id="data" /> -->
-            <br>
-            <h2>Set a username: </h2>
-            <p> Username:
-            <input id="username" class="form-control"/> </p>
-            <button id="save" class="btn btn-info"> Save </button>
-        </div>
+            <label for="password">Password</label>
+            <input type="password" name="password" id="register-password" value="" class="text ui-widget-content ui-corner-all form-control" />
+          </fieldset>
+          <br>
+          <button id="opener-register" class="btn btn-success">Set Preferences</button>
+        </form>
+      </div>
+      <br>
+      <button id="opener-logout" class="btn btn-danger">Logout</button>
+      <br>
+      <h2>Set a username: </h2>
+      <p> Username:
+      <input id="username" class="form-control"/> </p>
+      <button id="save" class="btn btn-info"> Save </button>
     </div>
+  </div>
 
-    
-<h1>BitCoin Tipping</h1>
-Default tip value: 
-<input type="text" pattern="[0-9]*\.[0-9]*" title="Enter a valid amount." size="8" id="amount" /> 
-<select id="currency"><option value="BTC" id="BTC">BTC</option><option value="USD" id="USD">USD</option><option value="EUR" id="EUR">EUR</option></select><br />
+ <div class="container">
 
-<input type="password" id="api_key">API Key<br></input>
-<input type="password" id="api_secret">API Secret</input>
-<br />
-<button id = "save_bittip"> Save Bitcoin and Coinbase choices! </button>
+  <h1>BitCoin Tipping</h1>
+  Default tip value:
+  <label> Enter a valid amount of currency: </label>
+  <input class="form-control" type="text" pattern="[0-9]*\.[0-9]*" size="8" id="amount"/>
+  <select id="currency">
+    <option value="BTC" id="BTC">BTC</option>
+    <option value="USD" id="USD">USD</option>
+    <option value="EUR" id="EUR">EUR</option>
+  </select>
+  <br>
+  <label> API Key: </label>
+  <input class="form-control" type="password" id="api_key">
+  <br>
+  <label> API Secret: </label>
+  <input class="form-control" type="password" id="api_secret">
+  <br>
+  <button id="save_bittip" class="btn btn-primary">
+    Save Bitcoin and Coinbase choices!
+  </button>
+  <br>
+  <br>
+ </div>
 
 <script type="text/javascript" src="options.js"></script>
 <script type='text/javascript' src='test.js'></script>
