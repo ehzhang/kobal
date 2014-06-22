@@ -44,27 +44,27 @@ var sendEmailAlert = function(email, url, original_content, replyer, reply_conte
   });
 }
 
-var postComment = function(url,id,content,sendResponse) {
-  chrome.storage.sync.get(["username","uid","email"], function(username, uid, email) {
-    var username = "ksiegel";
-    var uid = "12345";
-    var email = "ksiegel@mit.edu";
-    console.log("username", username);
-    console.log("uid",uid);
-    var path = "https://mmfvc.firebaseio.com/comments/" + url.shave().hashCode();
-    var commentsRef = new Firebase(path);
-    commentsRef.update({'username': username, 'uid': uid, 'url': url, 'email': email, 'id': id, 'content':content});
-    // Listen for replies
-    var repliesRef = new Firebase("https://mmfvc.firebaseio.com/comments/" + url.shave().hashCode());
-    commentsRef.on("child_added", function(childSnapshot, prevChildName) {
-      console.log(childSnapshot.val().toString());
-      sendEmailAlert(email, url, content, childSnapshot.val()['username'], childSnapshot.val()['content'],sendResponse);
-      sendResponse(childSnapshot.val());
-    })
+var postComment = function(url,text_id,content,sendResponse) {
+  chrome.storage.sync.get("username", function(username) {
+    chrome.storage.sync.get("email", function(email) {
+      chrome.storage.sync.get("id", function(uid) {
+        var comment_id = Math.floor((Math.random() * 1000000) + 1);
+        var path = "https://mmfvc.firebaseio.com/urls/" + url.shave().hashCode() + "/paragraphs/" + SHA224(content).toString() + "/comments/" + comment_id.toString();
+        var commentsRef = new Firebase(path);
+        commentsRef.update({'username': username, 'uid': uid, 'url': url, 'email': email, 'text_id': text_id});
+        // Listen for replies
+        var repliesRef = new Firebase("https://mmfvc.firebaseio.com/comments/" + url.shave().hashCode());
+        commentsRef.on("child_added", function(childSnapshot, prevChildName) {
+          sendEmailAlert(email, url, content, childSnapshot.val()['username'], childSnapshot.val()['content'],sendResponse);
+          sendResponse(childSnapshot.val());
+        })
+        sendResponse(text_id);
+      });
+    });
   });
 }
 
-var getPageComments = function(url,id,sendResponse) {
+var getPageComments = function(url,text_id,sendResponse) {
   var commentsRef = new Firebase("https://mmfvc.firebaseio.com/comments/" + url.shave().hashCode());
   commentsRef.once('value', function(childSnapshots) {
     childSnapshots.forEach(function(childSnapshot) {
