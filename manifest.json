@@ -13,11 +13,14 @@
   "default_locale": "en",
   "background": {
     "scripts": [
+      "js/jquery/jquery.min.js",
+      "src/bg/bittip.js",
       "src/bg/app.js"
     ],
     "persistent": true
   },
-  "permissions" : ["storage"],
+  "permissions" : ["storage",
+    "https://coinbase.com/", "tabs"],
   "options_page": "src/options/index.html",
   "content_security_policy": "script-src 'self' https://*.firebase.com https://cdn.firebase.com https://*.firebaseio.com; object-src 'self'",
   "content_scripts": [
@@ -37,6 +40,7 @@
     }
   ],
   "web_accessible_resources": [
-    "js/jquery/jquery.min.js"
+    "js/jquery/jquery.min.js",
+    "oauth_response.html"
   ]
 }
