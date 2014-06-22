@@ -41,6 +41,5 @@
   ],
   "web_accessible_resources": [
     "js/jquery/jquery.min.js",
-    "oauth_response.html"
   ]
 }
