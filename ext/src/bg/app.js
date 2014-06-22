@@ -22,7 +22,7 @@ String.prototype.shave = function() {
 
 // send email that comment was replied to
 var sendEmailAlert = function(email, url, original_content, replyer, reply_content, sendResponse) {
-  var content = replyer+" replied to your Annotip comment!\n\nYou wrote: " + original_content + "\n\n" + replyer + " wrote: " + reply_content + "\n\n" + "Click "+url+" to respond.";
+  var content = replyer+" replied to your Annotip comment!\n\n" + replyer + " wrote: " + original_content + "\n\n" + "Click "+url+" to respond.";
   var m = new mandrill.Mandrill('MKqVPsdcFONaM-Tmo88RyQ');
   var params = {
     "message": {
