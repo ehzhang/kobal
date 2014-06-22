@@ -1,88 +1,18 @@
-// The Coinbase access_token
-//TODO: Track its expiration instead of requesting a new one each time
-var coinbase_access_token = "";
-
-// Hook up a chrome message handler to get back messages when we finish OAUTH
-var login_success_callback;
-var login_failure_callback;
-
-chrome.runtime.onMessage.addListener(function(message, sender, sendResponse) {
-	sendResponse({});
-	if (message.code_token == undefined)
-		login_failure_callback("error connecting to coinbase");
-	else {
-		console.log(chrome.extension.getURL("options/oauth_response.html"));
-		$.ajax("https://coinbase.com/oauth/token", {
-			type: "POST",
-			data: {
-				grant_type: "authorization_code",
-				code: message.code_token,
-				redirect_uri: chrome.extension.getURL("options/oauth_response.html"),
-				client_id: "83c08a377c3b6e9a3232a092c78f5c5ebfccc1f5da5df94f947116bcb7328085",
-				// Ideally we would keep the client_secret secret, however there are essentially no threats that aren't easily addressed with this public.
-				// The reason for keeping this secret is so that if a malicious person were to clone the reddit tipbot (or any Coinbase app) and steal user's money, Coinbase could immediately blacklist the client_id making the calls and break the app.
-				// Though the possibility that such an attacker could use the real app's secret slows that a bit, it is still possible to push a new client_id/_secret to the real app and disable the old one.
-				// Sadly, for any motivated attacker, there is no way to prevent this (especially in Chrome, where we can easily see all the requests being made, including their headers, by simply pulling up the developer tools)
-				// (well...unless we were to do a native app and require TXT and a TPM-measured environment.......)
-				client_secret: "d64cf1bff72bdd010ad5f7e9c65ce2d6601705a8ce43e834a642ae8e0033e577"
-			},
-			success: function(response, textStatus, jqXHR) {
-				if (response.access_token != undefined && response.refresh_token != undefined) {
-					coinbase_access_token = response.access_token;
-					chrome.storage.local.set({'coinbase-refresh-token': response.refresh_token}, function() {});
-					login_success_callback();
-				} else {
-					console.log("Error getting Coinbase auth token:");
-					console.log(response);
-					login_failure_callback("error connecting to coinbase");
-				}
-			},
-			error: function(response, textStatus, jqXHR) {
-				console.log("Error getting auth_token from Coinbase after OAUTH");
-				console.log(response);
-				login_failure_callback("error connecting to coinbase");
-			},
-			cache: false
-		});
-	}
-});
-
+var coinbase-api-key, coinbase-secret;
 var checkCoinbaseLogin = function(success_callback, failure_callback) {
-	chrome.storage.local.get("coinbase-refresh-token", function(token) {
-		if (token["coinbase-refresh-token"] != "undefined") {
-			$.ajax("https://coinbase.com/oauth/token", {
-				type: "POST",
-				data: {
-					grant_type: "refresh_token",
-					refresh_token: token["coinbase-refresh-token"],
-					client_id: "83c08a377c3b6e9a3232a092c78f5c5ebfccc1f5da5df94f947116bcb7328085",
-					client_secret: "d64cf1bff72bdd010ad5f7e9c65ce2d6601705a8ce43e834a642ae8e0033e577"
-				},
-				success: function(response, textStatus, jqXHR) {
-					if (response.access_token != undefined && response.refresh_token != undefined) {
-						coinbase_access_token = response.access_token;
-						chrome.storage.local.set({'coinbase-refresh-token': response.refresh_token}, function() {});
-						success_callback();
-					} else {
-						console.log("Error getting Coinbase auth token:");
-						console.log(response);
-						failure_callback("not logged into Coinbase");
-					}
-				},
-				error: function(response, textStatus, jqXHR) {
-					failure_callback("not logged into Coinbase");
-				}
-			});
-		} else
-			failure_callback("not logged into Coinbase");
+	chrome.storage.sync.get("api_key", function(token) {
+		coinbase-api-key = token['api_key'];
 	});
-};
 
-// Opens up a Coinbase OAUTH window
-var coinbaseLogin = function(success_callback, failure_callback) {
-	login_success_callback = success_callback;
-	login_failure_callback = failure_callback;
-	window.showModalDialog("https://coinbase.com/oauth/authorize?response_type=code&client_id=83c08a377c3b6e9a3232a092c78f5c5ebfccc1f5da5df94f947116bcb7328085&client_secret=d64cf1bff72bdd010ad5f7e9c65ce2d6601705a8ce43e834a642ae8e0033e577&scope=send&redirect_uri=" + chrome.extension.getURL("options/oauth_response.html"));
+	chrome.storage.sync.get("api_secret", function(token) {
+		coinbase-secret = token['api_secret'];
+	});
+
+	if (coinbase-secret != "undefined" && coinbase-api-key != "undefined") {
+		return success_callback();
+	} else {
+		return failure_callback();
+	}
 };
 
 var fromUser;
@@ -90,18 +20,6 @@ var fromUser;
 // The amount to send
 var sendAmount = 0.50;
 var sendCurrency = 'USD';
-
-var enableInput = function() {
-	chrome.storage.sync.get("default_value", function(token) {
-		if (token["default_value"] == undefined)
-			token["default_value"] = "0.50";
-
-		chrome.storage.sync.get("default_currency", function(currency) {
-			if (currency["default_currency"] == undefined)
-				currency["default_currency"] = "USD";
-		});
-	})
-};
 
 var sendFailed = function(msg) {
 	console.log(msg)

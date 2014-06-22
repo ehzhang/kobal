@@ -1,3 +1,21 @@
+$('#api_key').on('change', function() {
+    chrome.storage.sync.set({'api_key': $('#api_key').val()}, function() {});
+  }
+});
+chrome.storage.sync.get('api_key', function(value) {
+  if (value['api_key'] != undefined)
+    $('#api_key').val(value['api_key']);
+});
+
+$('#api_secret').on('change', function() {
+    chrome.storage.sync.set({'api_secret': $('#api_secret').val()}, function() {});
+  }
+});
+chrome.storage.sync.get('api_secret', function(value) {
+  if (value['api_secret'] != undefined)
+    $('#api_secret').val(value['api_secret']);
+});
+
 $('#amount').on('change', function() {
   var match = $('#amount').val().match(/[0-9]*(\.[0-9]*)+/g)
   if (match == null || match.length != 1 || match[0] != $('#amount').val()) {
