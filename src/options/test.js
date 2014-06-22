@@ -25,54 +25,70 @@ var ref = new Firebase("https://mmfvc.firebaseio.com");
 myUser = -1;
 
 $(function () {
-    $("#dialog-register").dialog({
-        autoOpen: false,
-        buttons: {
-            "ok": function () {
+    // $("#dialog-register").dialog({
+    //     autoOpen: false,
+    //     buttons: {
+    //         "ok": function () {
 
+    //             var email = $("#register-email").val();
+    //             var password = $("#register-password").val();
+    //             authClient.createUser(email, password, function (error, user) {
+    //                 if (!error) {
+    //                     console.log('logging new registered user');
+    //                     doLogin(email, password);
+    //                 } else {
+    //                     alert(error);
+    //                 }
+    //             });
+
+    //             $(this).dialog("close");
+    //         },
+    //         Cancel: function () {
+    //             $(this).dialog("close");
+    //         }
+    //     }
+    // });
+
+    // $("#dialog-login").dialog({
+    //     autoOpen: false,
+    //     buttons: {
+    //         "ok": function () {
+    //             console.log('trying to login: ' + $("#login-email").val());
+
+    //             var email = $("#login-email").val();
+    //             var password = $("#login-password").val();
+
+    //             doLogin(email, password);
+    //             $(this).dialog("close");
+    //         },
+    //         Cancel: function () {
+    //             $(this).dialog("close");
+    //         }
+    //     }
+    // });
+
+    $("#opener-register").click(function () {
+        
                 var email = $("#register-email").val();
                 var password = $("#register-password").val();
+                console.log("Creating user " + email + " " + password);
                 authClient.createUser(email, password, function (error, user) {
                     if (!error) {
                         console.log('logging new registered user');
                         doLogin(email, password);
                     } else {
-                        alert(error);
+                        console.log(error);
                     }
                 });
-
-                $(this).dialog("close");
-            },
-            Cancel: function () {
-                $(this).dialog("close");
-            }
-        }
     });
 
-    $("#dialog-login").dialog({
-        autoOpen: false,
-        buttons: {
-            "ok": function () {
-                console.log('trying to login: ' + $("#login-email").val());
+    $("#opener-login").click(function () {
+                        console.log('trying to login: ' + $("#login-email").val());
 
                 var email = $("#login-email").val();
                 var password = $("#login-password").val();
 
                 doLogin(email, password);
-                $(this).dialog("close");
-            },
-            Cancel: function () {
-                $(this).dialog("close");
-            }
-        }
-    });
-
-    $("#opener-register").click(function () {
-        $("#dialog-register").dialog("open");
-    });
-
-    $("#opener-login").click(function () {
-        $("#dialog-login").dialog("open");
     });
 
     $("#opener-logout").click(function () {
@@ -87,7 +103,7 @@ function doLogin(email, password) {
     });
 };
 
-var authClient = new FirebaseAuthClient(ref, function (error, user) {
+var authClient = new FirebaseSimpleLogin(ref, function (error, user) {
     if (error) {
         alert(error);
         return;

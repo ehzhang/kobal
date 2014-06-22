@@ -3,10 +3,13 @@
 <head>
 	<title></title>
 	
+<script type='text/javascript' src='../../js/jquery/jquery.min.js'></script>
 <script type='text/javascript' src='https://cdn.firebase.com/v0/firebase.js'> </script>
-<script type='text/javascript' src='https://cdn.firebase.com/v0/firebase-simple-login.js'> </script>
+<script type='text/javascript'
+        src='https://cdn.firebase.com/js/simple-login/1.6.0/firebase-simple-login.js'>
+</script>
+
 <script type='text/javascript' src='test.js'></script>
-<script type='text/javascript' src='../../js/jquery/jquery.js'></script>
 </head>
 <body>
 <div id="dialog-register" title="Register new user">
@@ -17,6 +20,8 @@
             <label for="password">Password</label>
             <input type="password" name="password" id="register-password" value="" class="text ui-widget-content ui-corner-all" />
         </fieldset>
+        <button id="opener-register">Register</button>
+
     </form>
 </div>
 <div id="dialog-login" title="Login user">
@@ -27,10 +32,9 @@
             <label for="password">Password</label>
             <input type="password" name="password" id="login-password" value="" class="text ui-widget-content ui-corner-all" />
         </fieldset>
+        <button id="opener-login">Login</button>
     </form>
 </div>
-<button id="opener-register">Register</button>
-<button id="opener-login">Login</button>
 <button id="opener-logout">Logout</button>
 <br />
 <input id="data" />
