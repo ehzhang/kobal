@@ -45,7 +45,7 @@ var sendEmailAlert = function(email, url, original_content, replyer, reply_conte
 }
 
 var postComment = function(url,id,content,sendResponse) {
-  chrome.storage.sync.get(["username","uid"], function(username, uid, email) {
+  chrome.storage.sync.get(["username","uid","email"], function(username, uid, email) {
     var username = "ksiegel";
     var uid = "12345";
     var email = "ksiegel@mit.edu";
