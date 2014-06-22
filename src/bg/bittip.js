@@ -81,12 +81,13 @@ var sendBitcoin = function(destination_address, sendAmount, sendCurrency) {
 			postAuth();
 		}, function(msg) {
 			// Not authed, lets try to log in...
-			coinbaseLogin(function() {
-					// Authed now...
-					postAuth();
-				}, function(msg) {
-					// Failed to get user to login to their Coinbase acct...
-					sendFailed(msg);
-			});
+			// coinbaseLogin(function() {
+			// 		// Authed now...
+			// 		postAuth();
+			// 	}, function(msg) {
+			// 		// Failed to get user to login to their Coinbase acct...
+			// 		sendFailed(msg);
+			// });
+      alert("Please configure the extension with your Coinbase credentials");
 	})
 };
