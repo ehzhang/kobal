@@ -67,9 +67,11 @@ var postComment = function(url,text_id,content,sendResponse) {
 var getPageComments = function(url,text_id,sendResponse) {
   var commentsRef = new Firebase("https://mmfvc.firebaseio.com/comments/" + url.shave().hashCode());
   commentsRef.once('value', function(childSnapshots) {
+    var comments = [];
     childSnapshots.forEach(function(childSnapshot) {
-      sendResponse(childSnapshot.val());
+      comments.push(childSnapshot.val());
     });
+    sendResponse(comments);
   });
 }
 
@@ -81,7 +83,7 @@ chrome.extension.onMessage.addListener(
       postComment(message.url,message.id,message.content,sendResponse);
       return true;
     } else if (message.url && message.id && message.type == "GET") {
-      getPageComments(message.url, message.id,sendResponse);
+      getPageComments(message.url, message.id, sendResponse);
       return true;
     } else if (sendResponse) {
       sendResponse();
