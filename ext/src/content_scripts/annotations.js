@@ -208,6 +208,7 @@ function annotations() {
         "<li class='comment'>" +
         comment+
         (username ? "<small> - " + username + "</small>" : "") +
+        "<span class='bitcoin'>Ƀ</span>" +
         "</li>").fadeIn(800));
   }
 

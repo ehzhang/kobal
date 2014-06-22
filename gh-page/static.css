@@ -1,3 +1,9 @@
+body {
+  font-family: Montserrat, 'Helvetic Neue', 'Helvetica', sans-serif;
+  padding: 0;
+  margin: 0;
+}
+
 .background-image {
   position: fixed;
   left: 0;
@@ -9,8 +15,33 @@
   -moz-background-size: cover;
   -o-background-size: cover;
   background-size: cover;
-  -webkit-filter: blur(2px);
-  -moz-filter: blur(2px);
-  -o-filter: blur(2px);
-  -ms-filter: blur(2px);
+  z-index: -1;
+}
+
+.content {
+  width: 100%;
+  height: 100%;
+  text-align: center;
+
+  padding-top: 80px;
+}
+
+.header {
+  font-size: 141px;
+  color: #33B5E5;
+}
+
+.subtitle {
+  margin-top: -16px;
+  font-size: 44px;
+  color: white;
+}
+
+.example {
+  background: rgba(0, 0, 0, 0.36);
+  color: white;
+  width: 400px;
+  text-align: left;
+  margin: 32px auto;
+  padding: 16px;
 }

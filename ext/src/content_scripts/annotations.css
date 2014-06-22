@@ -124,3 +124,18 @@ ul.comments li.comment {
   padding-bottom: 8px;
   border-left: 4px solid #33B5E5;
 }
+
+span.bitcoin {
+  float: right;
+  opacity: 0;
+  color: #33B5E5;
+  transition: opacity .2s ease-in-out;
+}
+
+span.bitcoin:hover {
+  cursor: pointer;
+}
+
+li.comment:hover span.bitcoin {
+  opacity: 1;
+}
