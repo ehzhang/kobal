@@ -21,14 +21,19 @@
   "content_scripts": [
     {
       "matches": [
-        "*://*.docs.meteor.com/*"
+        "*://*.docs.meteor.com/*",
+        "*://*.github.com/*"
       ],
       "css": [
         "src/content_scripts/annotations.css"
       ],
       "js": [
+        "js/jquery/jquery.min.js",
         "src/content_scripts/annotations.js"
       ]
     }
-  ] 
+  ],
+  "web_accessible_resources": [
+    "js/jquery/jquery.min.js"
+  ]
 }
