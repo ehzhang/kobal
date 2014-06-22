@@ -60,7 +60,6 @@ div#annotation-pane form {
   width: 100%;
 }
 
-
 div#annotation-pane form textarea,
 div#annotation-pane form button {
   font-family: 'Helvetic Neue', 'Helvetica', sans-serif;
@@ -103,4 +102,10 @@ div#annotation-pane form textarea {
 div#annotation-pane form textarea:focus {
   border-left: 5px solid #9b9b9b;
   outline: none;
+}
+
+ul.comments {
+  font-size: 14px;
+  padding: 0;
+  margin: 16px;
 }

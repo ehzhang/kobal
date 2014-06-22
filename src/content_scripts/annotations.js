@@ -23,7 +23,6 @@ function annotations() {
 
   }
 
-
   function postComment(id) {
     var $input = $('#comment-input'),
         comment = $input.val(),
@@ -130,11 +129,15 @@ function annotations() {
 
     clearAnnotationPane();
 
+    appendComment("Loading...");
+    console.log("opening id: " + id);
+
     // Get data from firebase using the id
 
     var $paragraph = $findByAttributeValue("paragraph-id", id),
         url = location.href,
         content = $paragraph.text();
+
 
     // Send a message to chrome
     chrome.runtime.sendMessage({
@@ -158,9 +161,6 @@ function annotations() {
 
       }
     });
-
-    appendComment("Loading...");
-
   }
 
   /**
