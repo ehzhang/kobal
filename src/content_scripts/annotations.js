@@ -38,6 +38,7 @@ function annotations() {
     }, function (response) {
       $input.val("");
       populateAnnotations(id);
+      updateAnnotation(id);
     });
   }
 
@@ -62,8 +63,6 @@ function annotations() {
    */
   function attachAnnotation(paragraph, id){
 
-
-
     var margin = 16,
         offsetLeft= paragraph.offsetLeft + paragraph.offsetWidth + margin,
         offsetTop= paragraph.offsetTop,
@@ -72,21 +71,7 @@ function annotations() {
 
     $annotation.click(openAnnotationPane);
 
-    chrome.runtime.sendMessage({
-
-      url: location.href,
-      id: id,
-      content: $paragraph.text(),
-      type: "GET"
-
-    },function (response) {
-      if (response.length > 0){
-        $annotation
-          .text(response.length)
-          .removeClass('nocount');
-
-      }
-    });
+    updateAnnotation(id);
 
     // Append the annotation to the body
     $('body').append($annotation);
@@ -96,6 +81,25 @@ function annotations() {
       $annotation.css('visibility', 'visible');
     }, function() {
       // Nothing on hover leave right now...
+    });
+  }
+
+  function updateAnnotation(id) {
+
+     chrome.runtime.sendMessage({
+
+      url: location.href,
+      id: id,
+      content: $findByAttributeValue('paragraph-id', id).text(),
+      type: "GET"
+
+    },function (response) {
+      if (response.length > 0){
+        $findByAttributeValue('annotation-id', id)
+          .text(response.length)
+          .removeClass('nocount');
+
+      }
     });
   }
 
@@ -170,7 +174,8 @@ function annotations() {
 
         response.forEach(function(comment){
           appendComment(comment.comment, comment.username);
-        })
+        });
+        updateAnnotation(id);
 
       } else {
 
