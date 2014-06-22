@@ -37,7 +37,6 @@ div#annotation-pane {
   top: 0;
   right: 0;
   height: 100%;
-  overflow-y: scroll;
   width: 350px;
   margin-right: -350px;
   border-left: 3px solid #33B5E5;
@@ -47,16 +46,18 @@ div#annotation-pane {
 
 div#annotation-pane .container {
   position: relative;
+  padding: 0;
+  margin: 0;
   height: 100%;
   width: 100%;
+  overflow-y: scroll;
 }
 
 
 div#annotation-pane form {
   position: absolute;
-  padding: 16px;
+  bottom: 8px;
   width: 100%;
-  bottom: 0;
 }
 
 
@@ -64,9 +65,8 @@ div#annotation-pane form textarea,
 div#annotation-pane form button {
   font-family: 'Helvetic Neue', 'Helvetica', sans-serif;
   font-size: 16px;
-  margin: 0 auto;
-  margin-bottom: 8px;
-  width: 318px;
+  width: 325px;
+  margin: 8px;
 }
 
 div#annotation-pane form button {
@@ -97,7 +97,7 @@ div#annotation-pane form textarea {
   border-left: 3px solid #EBEBEB;
   transition: border-left .2s ease-in-out;
   height: 80px;
-  padding: 8px;
+  padding-left: 4px;
 }
 
 div#annotation-pane form textarea:focus {

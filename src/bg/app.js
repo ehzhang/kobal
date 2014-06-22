@@ -69,9 +69,11 @@ var getPageComments = function(url,text_id,content,sendResponse) {
   var commentsRef = new Firebase(path);
   console.log(path);
   commentsRef.once('value', function(childSnapshots) {
+    var comments = [];
     childSnapshots.forEach(function(childSnapshot) {
-      sendResponse(childSnapshot.val());
+      comments.push(childSnapshot.val());
     });
+    sendResponse(comments);
   });
 }
 
