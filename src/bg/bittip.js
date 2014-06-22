@@ -1,4 +1,3 @@
-var coinbase_api_key, coinbase_secret;
 var checkCoinbaseLogin = function(success_callback, failure_callback) {
 	chrome.storage.sync.get("api_key", function(token) {
 		coinbase_api_key = token['api_key'];
@@ -8,7 +7,7 @@ var checkCoinbaseLogin = function(success_callback, failure_callback) {
 		coinbase_secret = token['api_secret'];
 	});
 
-	if (coinbase_secret != "undefined" && coinbase_api_key != "undefined") {
+	if (coinbase_secret != null && coinbase_api_key != null) {
 		return success_callback();
 	} else {
 		return failure_callback();
@@ -33,29 +32,45 @@ var sendBitcoin = function(destination_address, sendAmount, sendCurrency) {
 	// Sends money using Coinbase
 	var sendMoney = function(success_callback, failure_callback) {
     var nonce = (new Date()).getTime();
-    var signature;
-    var url = "https://coinbase.com/api/v1/transactions/send_money";
+    // var signature;
+    var url = "https://coinbase.com/api/v1/transactions/send_money"
+    + "?transaction%5Bto%5D=" + destination_address
+    + "&transaction%5Bamount_string%5D=" + sendAmount
+    + "&transaction%5Bamount_currency_iso%5D=" + sendCurrency;
+    var params = {
+        transaction: {
+          to: destination_address,
+          amount_string: sendAmount,
+          amount_currency_iso: sendCurrency
+        }
+      };
+    params = http_build_query(json_decode(params), true);
+    var message = "" + nonce + url;
+    console.log(message);
 
 		$.ajax(url, {
 			type: "POST",
+			// data: {
+			// 	transaction: {
+			// 		to: destination_address,
+			// 		amount_string: sendAmount,
+			// 		amount_currency_iso: sendCurrency
+			// 	}
+			// },
       headers: {
         ACCESS_KEY: coinbase_api_key,
-        ACCESS_SIGNATURE: signature,
+        ACCESS_SIGNATURE:  CryptoJS.HmacSHA256(message, coinbase_secret),
         ACCESS_NONCE: nonce,
       },
-			data: {
-				transaction: {
-					to: destination_address,
-					amount_string: sendAmount,
-					amount_currency_iso: sendCurrency,
-					notes: "Tip from a 'tatertip user"
-				}
-			},
-      beforeSend: function(jqXHR, settings){
-        var message = "" + nonce + url + this.data;
-        signature = CryptoJS.HmacSHA256(message, coinbase_secret);
-        jqXHR.setRequestHeader("ACCESS_SIGNATURE", signature)
-      },
+
+
+
+
+      // beforeSend: function(jqXHR, settings){
+      //   var message = "" + nonce + url + this.data;
+      //   signature = CryptoJS.HmacSHA256(message, coinbase_secret);
+      //   jqXHR.setRequestHeader("ACCESS_SIGNATURE", signature);
+      // },
 			success: function(response, textStatus, jqXHR) {
 				if (response.success == true)
 					success_callback('sent ' + sendAmount + ' ' + sendCurrency + '...');
@@ -92,15 +107,15 @@ var sendBitcoin = function(destination_address, sendAmount, sendCurrency) {
 	checkCoinbaseLogin(function() {
 			// Already logged in...
 			postAuth();
-		}, function(msg) {
+		}, function() {
 			// Not authed, lets try to log in...
-			// coinbaseLogin(function() {
-			// 		// Authed now...
-			// 		postAuth();
-			// 	}, function(msg) {
-			// 		// Failed to get user to login to their Coinbase acct...
-			// 		sendFailed(msg);
-			// });
-      alert("Please configure the extension with your Coinbase credentials");
-	})
+			coinbaseLogin(function() {
+					// Authed now...
+					postAuth();
+				}, function(msg) {
+					// Failed to get user to login to their Coinbase acct...
+					sendFailed(msg);
+			});
+      alert("Please configure the extension with your Coinbase credentials!");
+	});
 };
