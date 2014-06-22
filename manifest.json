@@ -12,7 +12,7 @@
   "default_locale": "en",
   "background": {
     "scripts": [
-      "src/bg/background.js"
+      "src/bg/app.js"
     ],
     "persistent": true
   },
@@ -21,19 +21,14 @@
   "content_scripts": [
     {
       "matches": [
-        "https://www.google.com/*"
+        "*://www.docs.meteor.com/*"
       ],
       "css": [
-        "src/inject/inject.css"
-      ]
-    },
-    {
-      "matches": [
-        "https://www.google.com/*"
+        "src/content_scripts/annotations.css"
       ],
       "js": [
-        "src/inject/inject.js"
+        "src/content_scripts/annotations.js"
       ]
     }
-  ]
+  ] 
 }
