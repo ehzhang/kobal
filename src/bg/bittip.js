@@ -22,14 +22,6 @@ var checkCoinbaseLogin = function(success_callback, failure_callback) {
 	}
 };
 
-var sendFailed = function(msg) {
-	console.log(msg)
-}
-
-var sendSuccess = function(msg) {
-	console.log(msg);
-}
-
 chrome.extension.onMessage.addListener(
   function (message, sender, sendResponse) {
     // Check to make sure the message contains the fields we want
@@ -43,8 +35,12 @@ chrome.extension.onMessage.addListener(
   }
 );
 
-var sendBitcoin = function(destination_address, note) {
-
+var sendBitcoin = function(destination_address, note, callback) {
+	if(callback == null){
+		callback = function(msg){
+			console.log(msg);
+		}
+	}
 	var sendMoney = function(success_callback, failure_callback) {
     var nonce = (new Date()).getTime();
     // var signature;
@@ -67,9 +63,9 @@ var sendBitcoin = function(destination_address, note) {
 					success_callback('sent ' + sendAmount + ' ' + sendCurrency + '...');
 				else if (response.errors[0].indexOf("You don't have that much") == 0) {
 					failure_callback("not enough funds");
-                  } else if (response.errors[0].indexOf("This transaction amount is below the current minimum amount to be accepted by the bitcoin network") == 0) {
+        } else if (response.errors[0].indexOf("This transaction amount is below the current minimum amount to be accepted by the bitcoin network") == 0) {
 					failure_callback("value too small to send until the recipient claims their first tip");
-                  } else if (response.errors[0].indexOf("This transaction requires a 0.0005 fee to be accepted by the bitcoin network") == 0) {
+        } else if (response.errors[0].indexOf("This transaction requires a 0.0005 fee to be accepted by the bitcoin network") == 0) {
 					failure_callback("value too small to send until the recipient claims their first tip");
 				} else {
 					console.log("Error sending money:");
@@ -88,14 +84,15 @@ var sendBitcoin = function(destination_address, note) {
   // Check if logged in
 	checkCoinbaseLogin(function() {
 			// Already logged in...
-			sendMoney(function() {
-        sendSuccess('success!');
+			sendMoney(function(msg) {
+        callback({success: true, message: msg});
       }, function(msg) {
         // Failed to send (not enough funds, etc)
-        sendFailed(msg);
+        callback({success: false, message: msg});
       });
 		}, function() {
 			// Not authed
+			callback({success: false, message: "Please configure the extension with your Coinbase credentials!"});
       alert("Please configure the extension with your Coinbase credentials!");
 	});
 };
