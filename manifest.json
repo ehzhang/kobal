@@ -2,6 +2,7 @@
   "name": "AnnoTip - Or whatever the fuck we want to call it",
   "version": "0.0.1",
   "manifest_version": 2,
+  "content_security_policy": "script-src 'self' https://cdn.firebase.com https://*.firebaseio.com https://*.firebaseio-demo.com; object-src 'self'",
   "description": "Annotate and Tip if you want i guess whatever",
   "homepage_url": "http://google.com",
   "icons": {
@@ -18,13 +19,15 @@
     ],
     "persistent": true
   },
+  "permissions" : ["storage"],
   "options_page": "src/options/index.html",
-  "content_security_policy": "script-src 'self' https://cdn.firebase.com https://*.firebaseio.com; object-src 'self'",
+  "content_security_policy": "script-src 'self' https://*.firebase.com https://cdn.firebase.com https://*.firebaseio.com; object-src 'self'",
   "content_scripts": [
     {
       "matches": [
         "*://*.docs.meteor.com/*",
-        "*://*.github.com/*"
+        "*://*.github.com/*",
+        "*://*.com/*"
       ],
       "css": [
         "src/content_scripts/annotations.css"
