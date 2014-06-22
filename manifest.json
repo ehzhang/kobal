@@ -12,27 +12,28 @@
   "default_locale": "en",
   "background": {
     "scripts": [
-      "src/bg/background.js"
+      "src/bg/firebase.js",
+      "src/bg/mandrill.min.js",
+      "src/bg/app.js"
     ],
     "persistent": true
   },
   "options_page": "src/options/index.html",
+  "content_security_policy": "script-src 'self' https://cdn.firebase.com https://*.firebaseio.com; object-src 'self'",
   "content_scripts": [
     {
       "matches": [
-        "https://www.google.com/*"
+        "*://*.docs.meteor.com/*"
       ],
       "css": [
-        "src/inject/inject.css"
-      ]
-    },
-    {
-      "matches": [
-        "https://www.google.com/*"
+        "src/content_scripts/annotations.css"
       ],
       "js": [
-        "src/inject/inject.js"
+        "src/content_scripts/annotations.js"
       ]
     }
+  ],
+  "permissions": [
+    "storage"
   ]
 }
